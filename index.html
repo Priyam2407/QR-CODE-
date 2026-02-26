@@ -1,35 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>QR Code Generator </title>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TRJ9K1VG7C"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <title>Premium QR Code Generator</title>
 
-  gtag('config', 'G-TRJ9K1VG7C');
-</script>
+    <!-- Google Analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TRJ9K1VG7C"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);} 
+      gtag('js', new Date());
+      gtag('config', 'G-TRJ9K1VG7C');
+    </script>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        p {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: 0.3s;
+        }
+
+        input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        input:focus {
+            border-color: #00f2fe;
+            box-shadow: 0 0 10px rgba(0,242,254,0.5);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            color: white;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,242,254,0.4);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: white;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67,233,123,0.4);
+        }
+
+        #qrBox {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            background: white;
+            display: none;
+        }
+
+        footer {
+            margin-top: 15px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        footer span {
+            color: #00f2fe;
+            font-weight: 500;
+        }
+
+    </style>
+
 </head>
 
 <body>
-    <div class="card">
-        <h2>Enter your text or URL</h2>
-        <input type="text" placeholder="Text or URL" id="qrText">
-        <div id="imgBox">
-            <img src="" id="qrImage">
-        </div>
-        <div>
-            <button class="button" onclick="generateQR()">Generate QR Code</button>
-        </div>
+
+<div class="container">
+
+    <h1>QR Code Generator</h1>
+    <p>Create premium QR codes instantly</p>
+
+    <input type="text" id="qrText" placeholder="Enter text or URL">
+
+    <div class="buttons">
+        <button class="generate-btn" onclick="generateQR()">Generate</button>
+        <button class="download-btn" onclick="downloadQR()">Download</button>
     </div>
 
-    <script src="script.js"> </script>
-</body>
+    <div id="qrBox">
+        <div id="qrCode"></div>
+    </div>
 
+    <footer>
+        Professional Tool • Designed by <span>Priyam</span>
+    </footer>
+
+</div>
+
+<script>
+
+let qr;
+
+function generateQR() {
+
+    const text = document.getElementById("qrText").value.trim();
+    const qrBox = document.getElementById("qrBox");
+    const qrCode = document.getElementById("qrCode");
+
+    if(text === "") {
+        alert("Please enter text or URL");
+        return;
+    }
+
+    qrCode.innerHTML = "";
+
+    qr = new QRCode(qrCode, {
+        text: text,
+        width: 220,
+        height: 220,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+    qrBox.style.display = "block";
+}
+
+function downloadQR() {
+
+    const img = document.querySelector("#qrCode img");
+
+    if(!img) {
+        alert("Please generate QR code first");
+        return;
+    }
+
+    const link = document.createElement("a");
+    link.href = img.src;
+    link.download = "PremiumQRCode.png";
+    link.click();
+}
+
+</script>
+
+</body>
 </html>
